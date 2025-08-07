@@ -1,43 +1,104 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>🕯️ Тайный Шифратор</title>
+  <meta charset="UTF-8" />
+  <title>🕯️ Тайный Шифратор с Модалкой Входа</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: 'Courier New', monospace;
       background: #fef9c3;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
     }
-    .hidden-area {
+    #app {
       display: none;
+    }
+    /* Модальное затемнение */
+    #modalOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #modalBox {
+      background: #fff9d1;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 20px #d6b800;
+      width: 320px;
+      max-width: 90vw;
+      text-align: center;
+    }
+    #modalBox input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0.75rem;
+      border: 2px solid #d6b800;
+      font-size: 1rem;
+    }
+    #modalBox button {
+      background: #b58900;
+      color: white;
+      font-weight: bold;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 1rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+    #modalBox button:hover {
+      background: #a27500;
+    }
+    #modalError {
+      color: #b00000;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    /* Кнопки по умолчанию неактивны */
+    button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
     .typewriter-output {
       white-space: pre-wrap;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body>
 
-  <div id="loginArea" class="bg-white p-6 rounded-3xl shadow-lg w-full max-w-lg text-center space-y-4">
-    <h1 class="text-2xl font-bold text-purple-700">🔒 Доступ по паролю</h1>
-    <input id="username" type="text" placeholder="Имя..." class="w-full p-3 rounded-xl border border-purple-300">
-    <input id="password" type="password" placeholder="Пароль..." class="w-full p-3 rounded-xl border border-purple-300">
-    <button onclick="checkAccess()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold">Войти</button>
-    <p id="error" class="text-red-500 hidden">Неверно 🫢</p>
+  <!-- Модальное окно входа -->
+  <div id="modalOverlay">
+    <div id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle" style="font-size:1.8rem; margin-bottom:1rem; color:#b58900;">🔒 Вход в Тайную Зону</h2>
+      <input id="modalUsername" type="text" placeholder="Имя..." autocomplete="off" />
+      <input id="modalPassword" type="password" placeholder="Пароль..." autocomplete="off" />
+      <div id="modalError">Неверный логин или пароль!</div>
+      <button id="modalLoginBtn">Войти</button>
+    </div>
   </div>
 
-  <div id="app" class="hidden-area bg-white p-6 rounded-xl shadow-xl mt-8 w-full max-w-3xl">
+  <!-- Основное приложение -->
+  <div id="app" class="p-6 max-w-3xl mx-auto mt-8">
     <h1 class="text-3xl text-center mb-6 text-purple-800 font-bold">🪄 Шифратор</h1>
     <textarea id="inputText" rows="4" class="w-full p-3 border border-yellow-400 rounded-xl mb-4" placeholder="Введите сообщение..."></textarea>
-    <div class="flex justify-center gap-4">
-      <button onclick="encode()" class="bg-yellow-500 text-white px-6 py-2 rounded-full">✍️ Написать</button>
-      <button onclick="decode()" class="bg-green-500 text-white px-6 py-2 rounded-full">📖 Прочитать</button>
+    <div class="flex justify-center gap-4 mb-6">
+      <button id="btnEncode" onclick="encode()" disabled class="bg-yellow-300 text-white px-6 py-2 rounded-full cursor-not-allowed" title="Сначала войдите!">✍️ Написать</button>
+      <button id="btnDecode" onclick="decode()" disabled class="bg-green-300 text-white px-6 py-2 rounded-full cursor-not-allowed" title="Сначала войдите!">📖 Прочитать</button>
     </div>
-    <div id="outputText" class="mt-4 typewriter-output text-lg text-purple-900 min-h-[4rem]"></div>
+    <div id="outputText" class="typewriter-output text-lg text-purple-900 min-h-[4rem]"></div>
   </div>
 
   <script>
+    // Карты подстановки с "магической" обфускацией
     function reveal(encoded) {
       const map = {
         '∆':'A','¥':'B','₡':'C','Þ':'D','Σ':'E','₣':'F','Ǥ':'G','Ḩ':'H','ł':'I','Ĵ':'J',
@@ -58,6 +119,7 @@
       return atob(restored);
     }
 
+    // Зашифрованные данные (логин, пароль, алфавит)
     const encLogin = "R_Ɏ_¥₣₣₴";
     const encPass = "₥ØŖØǤ₥Ɏ₤Ø_₱ΣŖҠł₡Ø_₦Ʊ₴₮Ø_₥₣_₡ł∆ł_₤ł₦Ø₥₤Ɏ";
 
@@ -67,20 +129,38 @@
     let mapEncode = null;
     let mapDecode = null;
 
+    // Элементы кнопок и вывода
+    const btnEncode = document.getElementById('btnEncode');
+    const btnDecode = document.getElementById('btnDecode');
+    const outputText = document.getElementById('outputText');
+
+    // Функция проверки доступа
     function checkAccess() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
+      const user = document.getElementById('modalUsername').value.trim();
+      const pass = document.getElementById('modalPassword').value.trim();
+      const errorElem = document.getElementById('modalError');
 
       if (user === revealStr(encLogin) && pass === revealStr(encPass)) {
-        document.getElementById('loginArea').style.display = 'none';
+        errorElem.style.display = 'none';
+        document.getElementById('modalOverlay').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         mapEncode = reveal(mapEncodeEncrypted);
         mapDecode = reveal(mapDecodeEncrypted);
+
+        btnEncode.disabled = false;
+        btnDecode.disabled = false;
+
+        btnEncode.classList.remove('bg-yellow-300', 'cursor-not-allowed');
+        btnEncode.classList.add('bg-yellow-500', 'cursor-pointer');
+
+        btnDecode.classList.remove('bg-green-300', 'cursor-not-allowed');
+        btnDecode.classList.add('bg-green-500', 'cursor-pointer');
       } else {
-        document.getElementById('error').classList.remove('hidden');
+        errorElem.style.display = 'block';
       }
     }
 
+    // Трансформация текста по карте подстановок
     function transform(text, map) {
       return [...text].map(char => {
         const lower = char.toLowerCase();
@@ -89,6 +169,7 @@
       }).join('');
     }
 
+    // Эффект печати
     function typeText(element, text, delay = 30) {
       element.textContent = '';
       let i = 0;
@@ -103,14 +184,22 @@
     function encode() {
       const input = document.getElementById('inputText').value;
       const output = transform(input, mapEncode);
-      typeText(document.getElementById('outputText'), output);
+      typeText(outputText, output);
     }
 
     function decode() {
       const input = document.getElementById('inputText').value;
       const output = transform(input, mapDecode);
-      typeText(document.getElementById('outputText'), output);
+      typeText(outputText, output);
     }
+
+    // Навешиваем обработчик на кнопку модалки
+    document.getElementById('modalLoginBtn').addEventListener('click', checkAccess);
+
+    // Также можно войти нажатием Enter в модалке
+    document.getElementById('modalPassword').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAccess();
+    });
   </script>
 </body>
 </html>
