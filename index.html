@@ -2,25 +2,64 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Шифратор ✨</title>
+  <title>🔮 Магический Шифратор</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap');
+
+    body {
+      background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+      font-family: 'IM Fell English SC', serif;
+    }
+
+    .glow {
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .button-glow {
+      box-shadow: 0 0 15px rgba(153, 102, 255, 0.7);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .button-glow:hover {
+      box-shadow: 0 0 25px rgba(153, 102, 255, 1);
+      transform: scale(1.05);
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .typewriter-output {
+      white-space: pre-wrap;
+      font-weight: bold;
+      color: #5b21b6;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen flex items-center justify-center p-6">
-  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full space-y-4">
-    <h1 class="text-3xl font-bold text-center text-purple-700">🔐 Шифратор & Расшифратор</h1>
+<body class="min-h-screen bg-yellow-100 flex items-center justify-center p-6">
+  <div class="bg-white/70 border border-yellow-400 rounded-3xl p-8 max-w-3xl w-full shadow-xl fade-in">
+    <h1 class="text-4xl text-center text-purple-700 mb-6 glow">🕯️ Шифратор Древнего Письма</h1>
 
-    <textarea id="inputText" rows="4" placeholder="Напиши что-то..." class="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+    <label class="text-lg text-gray-700">Введи сообщение:</label>
+    <textarea id="inputText" rows="4" placeholder="Пиши здесь..." class="w-full p-4 mt-2 mb-4 bg-white border border-yellow-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg shadow-inner"></textarea>
 
-    <div class="flex justify-center gap-4">
-      <button onclick="encode()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-xl shadow">
-        ✍️ Написать
+    <div class="flex justify-center gap-6 mb-6">
+      <button onclick="encode()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold button-glow">
+        ✍️ Написать (Зашифровать)
       </button>
-      <button onclick="decode()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl shadow">
-        📖 Прочитать
+      <button onclick="decode()" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold button-glow">
+        📖 Прочитать (Расшифровать)
       </button>
     </div>
 
-    <textarea id="outputText" rows="4" readonly placeholder="Результат..." class="w-full p-3 border border-indigo-300 bg-indigo-50 text-indigo-800 rounded-lg"></textarea>
+    <label class="text-lg text-gray-700">Результат:</label>
+    <div id="outputText" class="w-full min-h-[7rem] bg-purple-50 border border-purple-200 rounded-xl p-4 text-lg typewriter-output shadow-inner"></div>
   </div>
 
   <script>
@@ -40,26 +79,41 @@
       'д': 'ч', 'в': 'ш', 'у': 'щ', 'щ': 'ь', 'н': 'ю', 'ю': 'я'
     };
 
-    function encode() {
-      const text = document.getElementById('inputText').value;
+    function transform(text, map) {
       let result = '';
       for (let char of text) {
         const lowerChar = char.toLowerCase();
-        const encoded = mapEncode[lowerChar] ?? char;
-        result += (char === lowerChar) ? encoded : encoded.toUpperCase();
+        const mapped = map[lowerChar] ?? char;
+        result += (char === lowerChar) ? mapped : mapped.toUpperCase();
       }
-      document.getElementById('outputText').value = result;
+      return result;
+    }
+
+    function typeText(element, text, delay = 30) {
+      element.textContent = '';
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          element.textContent += text[i];
+          i++;
+          setTimeout(type, delay);
+        }
+      }
+      type();
+    }
+
+    function encode() {
+      const input = document.getElementById('inputText').value;
+      const output = transform(input, mapEncode);
+      const outputEl = document.getElementById('outputText');
+      typeText(outputEl, output);
     }
 
     function decode() {
-      const text = document.getElementById('inputText').value;
-      let result = '';
-      for (let char of text) {
-        const lowerChar = char.toLowerCase();
-        const decoded = mapDecode[lowerChar] ?? char;
-        result += (char === lowerChar) ? decoded : decoded.toUpperCase();
-      }
-      document.getElementById('outputText').value = result;
+      const input = document.getElementById('inputText').value;
+      const output = transform(input, mapDecode);
+      const outputEl = document.getElementById('outputText');
+      typeText(outputEl, output);
     }
   </script>
 </body>
