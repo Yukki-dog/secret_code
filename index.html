@@ -2,8 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Просто сайт. ничего такого...</title>
- <script src="https://cdn.tailwindcss.com"></script>
+  <title>#Секретныйкод - Магический Шифратор</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
     body {
@@ -205,23 +204,6 @@
       user-select: text;
       text-shadow: 0 0 4px #ff4444;
     }
-    /* Эффект "магической" печати */
-    @keyframes magic-glow {
-      0%, 100% {
-        text-shadow:
-          0 0 5px #a67cff,
-          0 0 10px #b085ff,
-          0 0 15px #c1a3ff;
-        color: #d3bfff;
-      }
-      50% {
-        text-shadow:
-          0 0 10px #c1a3ff,
-          0 0 20px #d3bfff,
-          0 0 30px #e0d8ff;
-        color: #e0d8ff;
-      }
-    }
   </style>
 </head>
 <body>
@@ -248,54 +230,7 @@
   </div>
 
   <script>
-    // Перемешиваем пару символов для обфускации
-    function shuffleString(str) {
-      let arr = str.split('');
-      for (let i = 0; i < arr.length - 1; i += 2) {
-        [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
-      }
-      return arr.join('');
-    }
-    // Кодируем в двойной base64 + перемешивание
-    function doubleEncode(str) {
-      const once = btoa(unescape(encodeURIComponent(str)));
-      const shuffled = shuffleString(once);
-      return btoa(unescape(encodeURIComponent(shuffled)));
-    }
-
-    // Декодируем (если надо, не используется в проверке)
-    function unshuffleString(str) {
-      let arr = str.split('');
-      for (let i = 0; i < arr.length - 1; i += 2) {
-        [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
-      }
-      return arr.join('');
-    }
-    function doubleDecode(str) {
-      try {
-        const decodedOnce = decodeURIComponent(escape(atob(str)));
-        const unshuffled = unshuffleString(decodedOnce);
-        return decodeURIComponent(escape(atob(unshuffled)));
-      } catch {
-        return "";
-      }
-    }
-
-    // Пароль, зашифрованный этим способом (для "ЭмороженоеСбустоЛПбинокль")
-    const encPass = "T0ZWT0xBQkpEQVYwMUxXQjZLWkpCR0JDM1pDVkNaVTFJWQ==";
-
-    // Элементы
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalPassword = document.getElementById('modalPassword');
-    const modalLoginBtn = document.getElementById('modalLoginBtn');
-    const modalError = document.getElementById('modalError');
-    const app = document.getElementById('app');
-    const inputText = document.getElementById('inputText');
-    const btnEncode = document.getElementById('btnEncode');
-    const btnDecode = document.getElementById('btnDecode');
-    const outputText = document.getElementById('outputText');
-
-    // Шифровальные карты
+    // Карты шифрования
     const mapEncode = {
       'А':'о', 'Б':'з', 'В':'ы', 'Г':'Б', 'Д':'я', 'Е':'м', 'Ж':'й', 'З':'а', 'Ы':'ь', 'И':'р', 'Й':'ш', 'К':'ж', 'Л':'ф', 'М':'ц', 'Н':'т', 'О':'и',
       'П':'э', 'Р':'п', 'С':'х', 'Т':'ч', 'У':'г', 'Ф':'к', 'Х':'л', 'Ц':'с', 'Ч':'д', 'Ш':'в', 'Щ':'у', 'Ь':'щ', 'Ю':'н', 'Я':'ю',
@@ -329,9 +264,17 @@
     }
 
     // Проверка пароля
+    const correctPassword = "morojenoeEbustoSbinoklBFF";
+
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalPassword = document.getElementById('modalPassword');
+    const modalLoginBtn = document.getElementById('modalLoginBtn');
+    const modalError = document.getElementById('modalError');
+    const app = document.getElementById('app');
+
     function checkPassword() {
       const pass = modalPassword.value.trim();
-      if (doubleEncode(pass) === encPass) {
+      if (pass === correctPassword) {
         modalError.style.display = 'none';
         modalOverlay.style.display = 'none';
         app.style.display = 'block';
@@ -347,6 +290,12 @@
         modalPassword.focus();
       }
     }
+
+    // Кнопки и поля
+    const inputText = document.getElementById('inputText');
+    const btnEncode = document.getElementById('btnEncode');
+    const btnDecode = document.getElementById('btnDecode');
+    const outputText = document.getElementById('outputText');
 
     // Кодировать
     async function encode() {
