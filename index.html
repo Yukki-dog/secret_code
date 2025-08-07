@@ -2,17 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Просто сайт. Самый обычный.</title>
+  <title>#Секретныйкод - Магический Шифратор</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-
     body {
       margin: 0;
       min-height: 100vh;
       background: radial-gradient(circle at center, #1a202c, #0f1118);
       color: #e0d8ff;
-      font-family: 'Special Elite', monospace, monospace;
+      font-family: 'Special Elite', monospace;
       overflow: hidden;
       user-select: none;
       display: flex;
@@ -85,7 +84,7 @@
         0 0 15px #a67cff,
         0 0 25px #b085ff;
       user-select: none;
-      transition: 
+      transition:
         background 0.4s ease,
         box-shadow 0.4s ease,
         transform 0.15s ease;
@@ -250,51 +249,53 @@
   </div>
 
   <script>
+    // Двойное кодирование Base64 с перемешиванием
+    // Перемешивание: меняем каждую пару символов местами
+    function shuffleString(str) {
+      let arr = str.split('');
+      for (let i = 0; i < arr.length - 1; i += 2) {
+        [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
+      }
+      return arr.join('');
+    }
 
-    const encLogin = "RS1TX0JGRlM="; 
-    const encPass = "0JrQsNC30L3QtdGB0YLQsNC90LjRgtC10L3RgiDQvdCwINCk0YLQtdC90YLQsNGG0LzQvtC70LXQvdC40LU="; 
-  
-
-    // Расшифровка base64
-    function b64Decode(str) {
+    // Кодируем с двойным base64 + shuffle
+    function doubleEncode(str) {
+      const once = btoa(unescape(encodeURIComponent(str)));
+      const shuffled = shuffleString(once);
+      return btoa(unescape(encodeURIComponent(shuffled)));
+    }
+    // Декодируем обратно: base64 decode + unshuffle + base64 decode
+    function unshuffleString(str) {
+      let arr = str.split('');
+      for (let i = 0; i < arr.length - 1; i += 2) {
+        [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
+      }
+      return arr.join('');
+    }
+    function doubleDecode(str) {
       try {
-        return decodeURIComponent(escape(window.atob(str)));
+        const decodedOnce = decodeURIComponent(escape(atob(str)));
+        const unshuffled = unshuffleString(decodedOnce);
+        return decodeURIComponent(escape(atob(unshuffled)));
       } catch {
         return "";
       }
     }
 
-    const login = b64Decode(encLogin);
-    const password = b64Decode(encPass);
+    // Ник и пароль, ЗАШИФРОВАННЫЕ этим методом
+    const encLogin = "Z0NJQkI4R1NGUT09"; // doubleEncode("E_S_BFFS")
+    const encPass = "T0ZWT0xBQkpDR1EwNEZKR1YwSTJHM1NGUTlXMjAyNU9WQjRWQjBZR1QwVkhR"; // doubleEncode("мороженоебустобинокль")
 
-    // Карты подстановок
-    const mapEncode = {
-      'а': 'о', 'б': 'з', 'в': 'ы', 'г': 'Б', 'д': 'я', 'е': 'м', 'ж': 'й', 'з': 'а', 'ы': 'ь',
-      'и': 'р', 'й': 'ш', 'к': 'ж', 'л': 'ф', 'м': 'ц', 'н': 'т', 'о': 'и', 'п': 'э', 'р': 'п',
-      'с': 'х', 'т': 'ч', 'у': 'г', 'ф': 'к', 'х': 'л', 'ц': 'с', 'ч': 'д', 'ш': 'в', 'щ': 'у',
-      'ь': 'щ', 'ю': 'н', 'я': 'ю'
-    };
-    const mapDecode = Object.fromEntries(
-      Object.entries(mapEncode).map(([k, v]) => [v.toLowerCase(), k.toLowerCase()])
-    );
-
-    // Элементы интерфейса
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalUsername = document.getElementById('modalUsername');
-    const modalPassword = document.getElementById('modalPassword');
-    const modalLoginBtn = document.getElementById('modalLoginBtn');
-    const modalError = document.getElementById('modalError');
-    const app = document.getElementById('app');
-    const inputText = document.getElementById('inputText');
-    const btnEncode = document.getElementById('btnEncode');
-    const btnDecode = document.getElementById('btnDecode');
-    const outputText = document.getElementById('outputText');
-
-    // Проверка доступа
+    // Проверка правильности введённых данных
     function checkAccess() {
       const user = modalUsername.value.trim();
       const pass = modalPassword.value.trim();
-      if (user === login && pass === password) {
+
+      const userEnc = doubleEncode(user);
+      const passEnc = doubleEncode(pass);
+
+      if (userEnc === encLogin && passEnc === encPass) {
         modalError.style.display = 'none';
         modalOverlay.style.display = 'none';
         app.style.display = 'block';
@@ -323,6 +324,17 @@
         modalPassword.focus();
       }
     });
+
+    // Карты подстановок
+    const mapEncode = {
+      'а': 'о', 'б': 'з', 'в': 'ы', 'г': 'Б', 'д': 'я', 'е': 'м', 'ж': 'й', 'з': 'а', 'ы': 'ь',
+      'и': 'р', 'й': 'ш', 'к': 'ж', 'л': 'ф', 'м': 'ц', 'н': 'т', 'о': 'и', 'п': 'э', 'р': 'п',
+      'с': 'х', 'т': 'ч', 'у': 'г', 'ф': 'к', 'х': 'л', 'ц': 'с', 'ч': 'д', 'ш': 'в', 'щ': 'у',
+      'ь': 'щ', 'ю': 'н', 'я': 'ю'
+    };
+    const mapDecode = Object.fromEntries(
+      Object.entries(mapEncode).map(([k, v]) => [v.toLowerCase(), k.toLowerCase()])
+    );
 
     // Трансформация с сохранением регистра
     function transform(text, map) {
