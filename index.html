@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Шифратор ✨</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen flex items-center justify-center p-6">
+  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full space-y-4">
+    <h1 class="text-3xl font-bold text-center text-purple-700">🔐 Шифратор & Расшифратор</h1>
+
+    <textarea id="inputText" rows="4" placeholder="Напиши что-то..." class="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+
+    <div class="flex justify-center gap-4">
+      <button onclick="encode()" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-xl shadow">
+        ✍️ Написать
+      </button>
+      <button onclick="decode()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl shadow">
+        📖 Прочитать
+      </button>
+    </div>
+
+    <textarea id="outputText" rows="4" readonly placeholder="Результат..." class="w-full p-3 border border-indigo-300 bg-indigo-50 text-indigo-800 rounded-lg"></textarea>
+  </div>
+
+  <script>
+    const mapEncode = {
+      'а': 'о', 'б': 'з', 'в': 'ы', 'г': 'Б', 'д': 'я', 'е': 'м',
+      'ж': 'й', 'з': 'а', 'ы': 'ь', 'и': 'р', 'й': 'ш', 'к': 'ж',
+      'л': 'ф', 'м': 'ц', 'н': 'т', 'о': 'и', 'п': 'э', 'р': 'п',
+      'с': 'х', 'т': 'ч', 'у': 'г', 'ф': 'к', 'х': 'л', 'ц': 'с',
+      'ч': 'д', 'ш': 'в', 'щ': 'у', 'ь': 'щ', 'ю': 'н', 'я': 'ю'
+    };
+
+    const mapDecode = {
+      'о': 'а', 'з': 'б', 'ы': 'в', 'Б': 'г', 'я': 'д', 'м': 'е',
+      'й': 'ж', 'а': 'з', 'ь': 'ы', 'р': 'и', 'ш': 'й', 'ж': 'к',
+      'ф': 'л', 'ц': 'м', 'т': 'н', 'и': 'о', 'э': 'п', 'п': 'р',
+      'х': 'с', 'ч': 'т', 'г': 'у', 'к': 'ф', 'л': 'х', 'с': 'ц',
+      'д': 'ч', 'в': 'ш', 'у': 'щ', 'щ': 'ь', 'н': 'ю', 'ю': 'я'
+    };
+
+    function encode() {
+      const text = document.getElementById('inputText').value;
+      let result = '';
+      for (let char of text) {
+        const lowerChar = char.toLowerCase();
+        const encoded = mapEncode[lowerChar] ?? char;
+        result += (char === lowerChar) ? encoded : encoded.toUpperCase();
+      }
+      document.getElementById('outputText').value = result;
+    }
+
+    function decode() {
+      const text = document.getElementById('inputText').value;
+      let result = '';
+      for (let char of text) {
+        const lowerChar = char.toLowerCase();
+        const decoded = mapDecode[lowerChar] ?? char;
+        result += (char === lowerChar) ? decoded : decoded.toUpperCase();
+      }
+      document.getElementById('outputText').value = result;
+    }
+  </script>
+</body>
+</html>
