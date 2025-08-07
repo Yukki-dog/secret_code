@@ -2,118 +2,114 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>🔮 Магический Шифратор</title>
+  <title>🕯️ Тайный Шифратор</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap');
-
     body {
-      background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-      font-family: 'IM Fell English SC', serif;
+      font-family: 'Courier New', monospace;
+      background: #fef9c3;
     }
-
-    .glow {
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    .hidden-area {
+      display: none;
     }
-
-    .button-glow {
-      box-shadow: 0 0 15px rgba(153, 102, 255, 0.7);
-      transition: all 0.3s ease-in-out;
-    }
-
-    .button-glow:hover {
-      box-shadow: 0 0 25px rgba(153, 102, 255, 1);
-      transform: scale(1.05);
-    }
-
-    .fade-in {
-      animation: fadeIn 1s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .typewriter-output {
       white-space: pre-wrap;
-      font-weight: bold;
-      color: #5b21b6;
     }
   </style>
 </head>
-<body class="min-h-screen bg-yellow-100 flex items-center justify-center p-6">
-  <div class="bg-white/70 border border-yellow-400 rounded-3xl p-8 max-w-3xl w-full shadow-xl fade-in">
-    <h1 class="text-4xl text-center text-purple-700 mb-6 glow">🕯️ Шифратор Древнего Письма</h1>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
-    <label class="text-lg text-gray-700">Введи сообщение:</label>
-    <textarea id="inputText" rows="4" placeholder="Пиши здесь..." class="w-full p-4 mt-2 mb-4 bg-white border border-yellow-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg shadow-inner"></textarea>
+  <div id="loginArea" class="bg-white p-6 rounded-3xl shadow-lg w-full max-w-lg text-center space-y-4">
+    <h1 class="text-2xl font-bold text-purple-700">🔒 Доступ по паролю</h1>
+    <input id="username" type="text" placeholder="Имя..." class="w-full p-3 rounded-xl border border-purple-300">
+    <input id="password" type="password" placeholder="Пароль..." class="w-full p-3 rounded-xl border border-purple-300">
+    <button onclick="checkAccess()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold">Войти</button>
+    <p id="error" class="text-red-500 hidden">Неверно 🫢</p>
+  </div>
 
-    <div class="flex justify-center gap-6 mb-6">
-      <button onclick="encode()" class="bg-purple-600 text-white px-6 py-2 rounded-full font-bold button-glow">
-        ✍️ Написать (Зашифровать)
-      </button>
-      <button onclick="decode()" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold button-glow">
-        📖 Прочитать (Расшифровать)
-      </button>
+  <div id="app" class="hidden-area bg-white p-6 rounded-xl shadow-xl mt-8 w-full max-w-3xl">
+    <h1 class="text-3xl text-center mb-6 text-purple-800 font-bold">🪄 Шифратор</h1>
+    <textarea id="inputText" rows="4" class="w-full p-3 border border-yellow-400 rounded-xl mb-4" placeholder="Введите сообщение..."></textarea>
+    <div class="flex justify-center gap-4">
+      <button onclick="encode()" class="bg-yellow-500 text-white px-6 py-2 rounded-full">✍️ Написать</button>
+      <button onclick="decode()" class="bg-green-500 text-white px-6 py-2 rounded-full">📖 Прочитать</button>
     </div>
-
-    <label class="text-lg text-gray-700">Результат:</label>
-    <div id="outputText" class="w-full min-h-[7rem] bg-purple-50 border border-purple-200 rounded-xl p-4 text-lg typewriter-output shadow-inner"></div>
+    <div id="outputText" class="mt-4 typewriter-output text-lg text-purple-900 min-h-[4rem]"></div>
   </div>
 
   <script>
-    const mapEncode = {
-      'а': 'о', 'б': 'з', 'в': 'ы', 'г': 'Б', 'д': 'я', 'е': 'м',
-      'ж': 'й', 'з': 'а', 'ы': 'ь', 'и': 'р', 'й': 'ш', 'к': 'ж',
-      'л': 'ф', 'м': 'ц', 'н': 'т', 'о': 'и', 'п': 'э', 'р': 'п',
-      'с': 'х', 'т': 'ч', 'у': 'г', 'ф': 'к', 'х': 'л', 'ц': 'с',
-      'ч': 'д', 'ш': 'в', 'щ': 'у', 'ь': 'щ', 'ю': 'н', 'я': 'ю'
-    };
+    function reveal(encoded) {
+      const map = {
+        '∆':'A','¥':'B','₡':'C','Þ':'D','Σ':'E','₣':'F','Ǥ':'G','Ḩ':'H','ł':'I','Ĵ':'J',
+        'Ҡ':'K','Ⱡ':'L','₥':'M','₦':'N','Ø':'O','₱':'P','Ǫ':'Q','Ŗ':'R','₴':'S','₮':'T',
+        'Ʊ':'U','Ṽ':'V','Ŵ':'W','Ӿ':'X','Ɏ':'Y','Ȥ':'Z','~':'=','*':'+','_':'/'
+      };
+      let restored = encoded.split('').map(c => Object.entries(map).find(([k]) => k === c)?.[1] || c).join('');
+      return JSON.parse(atob(restored));
+    }
 
-    const mapDecode = {
-      'о': 'а', 'з': 'б', 'ы': 'в', 'Б': 'г', 'я': 'д', 'м': 'е',
-      'й': 'ж', 'а': 'з', 'ь': 'ы', 'р': 'и', 'ш': 'й', 'ж': 'к',
-      'ф': 'л', 'ц': 'м', 'т': 'н', 'и': 'о', 'э': 'п', 'п': 'р',
-      'х': 'с', 'ч': 'т', 'г': 'у', 'к': 'ф', 'л': 'х', 'с': 'ц',
-      'д': 'ч', 'в': 'ш', 'у': 'щ', 'щ': 'ь', 'н': 'ю', 'ю': 'я'
-    };
+    function revealStr(encoded) {
+      const map = {
+        '∆':'A','¥':'B','₡':'C','Þ':'D','Σ':'E','₣':'F','Ǥ':'G','Ḩ':'H','ł':'I','Ĵ':'J',
+        'Ҡ':'K','Ⱡ':'L','₥':'M','₦':'N','Ø':'O','₱':'P','Ǫ':'Q','Ŗ':'R','₴':'S','₮':'T',
+        'Ʊ':'U','Ṽ':'V','Ŵ':'W','Ӿ':'X','Ɏ':'Y','Ȥ':'Z','~':'=','*':'+','_':'/'
+      };
+      let restored = encoded.split('').map(c => Object.entries(map).find(([k]) => k === c)?.[1] || c).join('');
+      return atob(restored);
+    }
+
+    const encLogin = "R_Ɏ_¥₣₣₴";
+    const encPass = "₥ØŖØǤ₥Ɏ₤Ø_₱ΣŖҠł₡Ø_₦Ʊ₴₮Ø_₥₣_₡ł∆ł_₤ł₦Ø₥₤Ɏ";
+
+    const mapEncodeEncrypted = "eyLihpIgOiLihpEiLCLihpMiOiLihpgiLCLihpkiOiLQkIiwi0YHQtdC70LjQutCwIjoi0YHQsNC50YIiLCLihpYiOiLihp4iLCLihpkiOiLQmSIsIuKGkSI6IuKGkCIiLCLihpYiOiLihpYiLCLihpQiOiLihpMiLCLihpwiOiLQmCIiLCLihp8iOiLQsiIsIuKGkCI6IuKGkSIiLCLihpYiOiLihpAiLCLihp0iOiLQqCIiLCLihqAiOiLQkiIsIuKGlyI6ItChIiwi4oaXIjoi0KYiLCLihqUiOiLQnCIiLCLihqAiOiLQpCIiLCLihqgiOiLQriIsIuKGqiI6ItChIiwi4oarySI6ItCfIiwi4oaqiiI6ItChIiwi4oaPIjoi0JYiLCLihqwiOiLQvCIiLCLihqYiOiLQsiIsIuKGrSI6ItCQIiwi4oatlCI6ItCUIiwi4oa4Ijoi0JMiLCLihqYiOiLQqCIiLCLihqIiOiLQsiIsIuKGrCI6ItCgIiwi4oaylSI6ItCUIn0=";
+    const mapDecodeEncrypted = "eyLihpAiOiLihpIiLCLihpMiOiLihpEiLCJCSiI6IuKGkiIsIuKGkyI6IuKGkSIiLCJtIjoi0KYiLCJqIjoi0LQiLCJhIjoi0LkiLCLihp4iOiLihpkiLCJyIjoi0LciLCJzaCI6IuKGkyIsImoiOiLihpYiLCJmIjoi0LMiLCJjIjoi0LwiLCJ0Ijoi0LciLCJpIjoi0LoiLCLihpAiOiLihpgiLCJwIjoi0LQiLCJ4Ijoi0LgiLCJjaCI6ItCIIiwiZyI6ItCUIiwiayI6ItCjIiwiSCI6ItCWIiwicSI6ItCyIiwiZCI6ItCEIiwi0LIiOiLQqSIiLCJ1Ijoi0JkiLCLQpyI6ItCxIn0=";
+
+    let mapEncode = null;
+    let mapDecode = null;
+
+    function checkAccess() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+
+      if (user === revealStr(encLogin) && pass === revealStr(encPass)) {
+        document.getElementById('loginArea').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        mapEncode = reveal(mapEncodeEncrypted);
+        mapDecode = reveal(mapDecodeEncrypted);
+      } else {
+        document.getElementById('error').classList.remove('hidden');
+      }
+    }
 
     function transform(text, map) {
-      let result = '';
-      for (let char of text) {
-        const lowerChar = char.toLowerCase();
-        const mapped = map[lowerChar] ?? char;
-        result += (char === lowerChar) ? mapped : mapped.toUpperCase();
-      }
-      return result;
+      return [...text].map(char => {
+        const lower = char.toLowerCase();
+        const mapped = map[lower] || char;
+        return char === lower ? mapped : mapped.toUpperCase();
+      }).join('');
     }
 
     function typeText(element, text, delay = 30) {
       element.textContent = '';
       let i = 0;
-      function type() {
+      (function type() {
         if (i < text.length) {
-          element.textContent += text[i];
-          i++;
+          element.textContent += text[i++];
           setTimeout(type, delay);
         }
-      }
-      type();
+      })();
     }
 
     function encode() {
       const input = document.getElementById('inputText').value;
       const output = transform(input, mapEncode);
-      const outputEl = document.getElementById('outputText');
-      typeText(outputEl, output);
+      typeText(document.getElementById('outputText'), output);
     }
 
     function decode() {
       const input = document.getElementById('inputText').value;
       const output = transform(input, mapDecode);
-      const outputEl = document.getElementById('outputText');
-      typeText(outputEl, output);
+      typeText(document.getElementById('outputText'), output);
     }
   </script>
 </body>
