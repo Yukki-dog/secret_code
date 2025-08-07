@@ -2,204 +2,360 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Просто сайт. обычный..</title>
+  <title>#Секретныйкод - Магический Шифратор</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
     body {
-      font-family: 'Courier New', monospace;
-      background: #fef9c3;
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #1a202c, #0f1118);
+      color: #e0d8ff;
+      font-family: 'Special Elite', monospace, monospace;
       overflow: hidden;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
     }
     #app {
       display: none;
-    }
-    /* Модальное затемнение */
-    #modalOverlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    #modalBox {
-      background: #fff9d1;
+      max-width: 600px;
+      width: 100%;
+      background: #2d2f4acc;
       padding: 2rem;
       border-radius: 1.5rem;
-      box-shadow: 0 0 20px #d6b800;
-      width: 320px;
-      max-width: 90vw;
+      box-shadow:
+        0 0 15px #7f53ff,
+        0 0 30px #a67cff,
+        0 0 45px #b085ff,
+        inset 0 0 15px #c1a3ff;
+    }
+    h1 {
       text-align: center;
+      font-size: 2.7rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      color: #d3bfff;
+      text-shadow: 0 0 6px #a074ff;
+      user-select: text;
+    }
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      background: #1a1d35;
+      border: 2px solid #7f53ff;
+      border-radius: 1rem;
+      padding: 1rem;
+      font-size: 1.2rem;
+      color: #d3bfff;
+      resize: vertical;
+      box-shadow: 0 0 10px #8a7affaa inset;
+      transition: border-color 0.3s ease;
+      font-family: 'Special Elite', monospace;
+      user-select: text;
+    }
+    textarea:focus {
+      border-color: #d3bfff;
+      outline: none;
+      box-shadow:
+        0 0 15px #a67cff,
+        inset 0 0 12px #c1a3ff;
+      background: #292d53;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    button {
+      background: linear-gradient(45deg, #7f53ff, #a67cff);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 0.8rem 2.5rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      box-shadow:
+        0 0 8px #7f53ff,
+        0 0 15px #a67cff,
+        0 0 25px #b085ff;
+      user-select: none;
+      transition: 
+        background 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    button:disabled,
+    button[disabled] {
+      background: #4b3e7f55;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #b9aee3aa;
+    }
+    button:not(:disabled):hover {
+      background: linear-gradient(45deg, #b085ff, #7f53ff);
+      box-shadow:
+        0 0 20px #b085ff,
+        0 0 40px #a67cff,
+        0 0 60px #c1a3ff;
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    button:not(:disabled):active {
+      transform: scale(0.95);
+      box-shadow:
+        0 0 10px #7f53ff,
+        0 0 15px #a67cff;
+    }
+    #outputText {
+      min-height: 5rem;
+      font-size: 1.4rem;
+      background: #1a1d35cc;
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      box-shadow:
+        0 0 15px #a67cffaa inset;
+      color: #d3bfff;
+      white-space: pre-wrap;
+      user-select: text;
+      position: relative;
+    }
+    /* Модальное окно */
+    #modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 35, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      user-select: none;
+    }
+    #modalBox {
+      background: #261f54;
+      padding: 2.2rem 2rem 2rem 2rem;
+      border-radius: 1.7rem;
+      width: 320px;
+      box-shadow:
+        0 0 25px #a67cffaa,
+        inset 0 0 12px #7f53ffbb;
+      text-align: center;
+      user-select: text;
+    }
+    #modalBox h2 {
+      color: #d3bfff;
+      font-size: 1.9rem;
+      margin-bottom: 1.4rem;
+      text-shadow: 0 0 8px #a67cff;
+      user-select: text;
     }
     #modalBox input {
       width: 100%;
       padding: 0.7rem 1rem;
-      margin-bottom: 1rem;
-      border-radius: 0.75rem;
-      border: 2px solid #d6b800;
-      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      border-radius: 1rem;
+      border: none;
+      font-size: 1.1rem;
+      font-family: 'Special Elite', monospace;
+      background: #1a1d35;
+      color: #d3bfff;
+      box-shadow: inset 0 0 8px #7f53ffbb;
+      transition: box-shadow 0.3s ease;
+    }
+    #modalBox input:focus {
+      outline: none;
+      box-shadow: 0 0 15px #b085ff, inset 0 0 12px #b085ffcc;
+      background: #292d53;
     }
     #modalBox button {
-      background: #b58900;
-      color: white;
-      font-weight: bold;
-      padding: 0.7rem 1.5rem;
-      border: none;
-      border-radius: 1rem;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
       width: 100%;
+      background: linear-gradient(45deg, #7f53ff, #a67cff);
+      border-radius: 2rem;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      box-shadow:
+        0 0 12px #7f53ff,
+        0 0 30px #a67cff;
+      user-select: none;
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+      user-select: none;
+      user-drag: none;
     }
     #modalBox button:hover {
-      background: #a27500;
+      background: linear-gradient(45deg, #b085ff, #7f53ff);
+      box-shadow:
+        0 0 25px #b085ff,
+        0 0 45px #a67cff;
     }
     #modalError {
-      color: #b00000;
-      font-weight: 600;
+      color: #ff5a5a;
+      font-weight: 700;
       margin-bottom: 1rem;
       display: none;
+      user-select: text;
+      text-shadow: 0 0 4px #ff4444;
     }
-    /* Кнопки по умолчанию неактивны */
-    button[disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .typewriter-output {
-      white-space: pre-wrap;
+    /* Эффект "магической" печати */
+    @keyframes magic-glow {
+      0%, 100% {
+        text-shadow:
+          0 0 5px #a67cff,
+          0 0 10px #b085ff,
+          0 0 15px #c1a3ff;
+        color: #d3bfff;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #c1a3ff,
+          0 0 20px #d3bfff,
+          0 0 30px #e0d8ff;
+        color: #e0d8ff;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Модальное окно входа -->
-  <div id="modalOverlay">
-    <div id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h2 id="modalTitle" style="font-size:1.8rem; margin-bottom:1rem; color:#b58900;">🔒 Вход в Тайную Зону</h2>
-      <input id="modalUsername" type="text" placeholder="Имя..." autocomplete="off" />
-      <input id="modalPassword" type="password" placeholder="Пароль..." autocomplete="off" />
-      <div id="modalError">Неверный логин или пароль!</div>
-      <button id="modalLoginBtn">Войти</button>
+  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div id="modalBox">
+      <h2 id="modalTitle">🔒 Вход в #Секретныйкод</h2>
+      <input id="modalUsername" type="text" autocomplete="off" placeholder="Имя (ник)" aria-label="Имя пользователя" />
+      <input id="modalPassword" type="password" autocomplete="off" placeholder="Пароль" aria-label="Пароль" />
+      <div id="modalError">Неверный ник или пароль!</div>
+      <button id="modalLoginBtn" aria-describedby="modalError">Войти</button>
     </div>
   </div>
 
   <!-- Основное приложение -->
-  <div id="app" class="p-6 max-w-3xl mx-auto mt-8">
-    <h1 class="text-3xl text-center mb-6 text-purple-800 font-bold">🪄 Шифратор</h1>
-    <textarea id="inputText" rows="4" class="w-full p-3 border border-yellow-400 rounded-xl mb-4" placeholder="Введите сообщение..."></textarea>
-    <div class="flex justify-center gap-4 mb-6">
-      <button id="btnEncode" onclick="encode()" disabled class="bg-yellow-300 text-white px-6 py-2 rounded-full cursor-not-allowed" title="Сначала войдите!">✍️ Написать</button>
-      <button id="btnDecode" onclick="decode()" disabled class="bg-green-300 text-white px-6 py-2 rounded-full cursor-not-allowed" title="Сначала войдите!">📖 Прочитать</button>
+  <div id="app" role="main" aria-live="polite" aria-atomic="true">
+    <h1>#Секретныйкод - Магический Шифратор</h1>
+    <textarea id="inputText" placeholder="Введите текст..." aria-label="Поле ввода текста"></textarea>
+    <div class="buttons">
+      <button id="btnEncode" disabled aria-disabled="true" title="Сначала войдите!">✍️ Написать</button>
+      <button id="btnDecode" disabled aria-disabled="true" title="Сначала войдите!">📖 Прочитать</button>
     </div>
-    <div id="outputText" class="typewriter-output text-lg text-purple-900 min-h-[4rem]"></div>
+    <div id="outputText" aria-live="polite" aria-atomic="true" tabindex="0"></div>
   </div>
 
   <script>
-    // Карты подстановки с "магической" обфускацией
-    function reveal(encoded) {
-      const map = {
-        '∆':'A','¥':'B','₡':'C','Þ':'D','Σ':'E','₣':'F','Ǥ':'G','Ḩ':'H','ł':'I','Ĵ':'J',
-        'Ҡ':'K','Ⱡ':'L','₥':'M','₦':'N','Ø':'O','₱':'P','Ǫ':'Q','Ŗ':'R','₴':'S','₮':'T',
-        'Ʊ':'U','Ṽ':'V','Ŵ':'W','Ӿ':'X','Ɏ':'Y','Ȥ':'Z','~':'=','*':'+','_':'/'
-      };
-      let restored = encoded.split('').map(c => Object.entries(map).find(([k]) => k === c)?.[1] || c).join('');
-      return JSON.parse(atob(restored));
+
+    const encLogin = "RS1TX0JGRlM="; 
+    const encPass = "0JrQsNC30L3QtdGB0YLQsNC90LjRgtC10L3RgiDQvdCwINCk0YLQtdC90YLQsNGG0LzQvtC70LXQvdC40LU="; 
+  
+
+    // Расшифровка base64
+    function b64Decode(str) {
+      try {
+        return decodeURIComponent(escape(window.atob(str)));
+      } catch {
+        return "";
+      }
     }
 
-    function revealStr(encoded) {
-      const map = {
-        '∆':'A','¥':'B','₡':'C','Þ':'D','Σ':'E','₣':'F','Ǥ':'G','Ḩ':'H','ł':'I','Ĵ':'J',
-        'Ҡ':'K','Ⱡ':'L','₥':'M','₦':'N','Ø':'O','₱':'P','Ǫ':'Q','Ŗ':'R','₴':'S','₮':'T',
-        'Ʊ':'U','Ṽ':'V','Ŵ':'W','Ӿ':'X','Ɏ':'Y','Ȥ':'Z','~':'=','*':'+','_':'/'
-      };
-      let restored = encoded.split('').map(c => Object.entries(map).find(([k]) => k === c)?.[1] || c).join('');
-      return atob(restored);
-    }
+    const login = b64Decode(encLogin);
+    const password = b64Decode(encPass);
 
-    // Зашифрованные данные (логин, пароль, алфавит)
-    const encLogin = "R_Ɏ_¥₣₣₴";
-    const encPass = "₥ØŖØǤ₥Ɏ₤Ø_₱ΣŖҠł₡Ø_₦Ʊ₴₮Ø_₥₣_₡ł∆ł_₤ł₦Ø₥₤Ɏ";
+    // Карты подстановок
+    const mapEncode = {
+      'а': 'о', 'б': 'з', 'в': 'ы', 'г': 'Б', 'д': 'я', 'е': 'м', 'ж': 'й', 'з': 'а', 'ы': 'ь',
+      'и': 'р', 'й': 'ш', 'к': 'ж', 'л': 'ф', 'м': 'ц', 'н': 'т', 'о': 'и', 'п': 'э', 'р': 'п',
+      'с': 'х', 'т': 'ч', 'у': 'г', 'ф': 'к', 'х': 'л', 'ц': 'с', 'ч': 'д', 'ш': 'в', 'щ': 'у',
+      'ь': 'щ', 'ю': 'н', 'я': 'ю'
+    };
+    const mapDecode = Object.fromEntries(
+      Object.entries(mapEncode).map(([k, v]) => [v.toLowerCase(), k.toLowerCase()])
+    );
 
-    const mapEncodeEncrypted = "eyLihpIgOiLihpEiLCLihpMiOiLihpgiLCLihpkiOiLQkIiwi0YHQtdC70LjQutCwIjoi0YHQsNC50YIiLCLihpYiOiLihp4iLCLihpkiOiLQmSIsIuKGkSI6IuKGkCIiLCLihpYiOiLihpYiLCLihpQiOiLihpMiLCLihpwiOiLQmCIiLCLihp8iOiLQsiIsIuKGkCI6IuKGkSIiLCLihpYiOiLihpAiLCLihp0iOiLQqCIiLCLihqAiOiLQkiIsIuKGlyI6ItChIiwi4oaXIjoi0KYiLCLihqUiOiLQnCIiLCLihqAiOiLQpCIiLCLihqgiOiLQriIsIuKGqiI6ItChIiwi4oarySI6ItCfIiwi4oaqiiI6ItChIiwi4oaPIjoi0JYiLCLihqwiOiLQvCIiLCLihqYiOiLQsiIsIuKGrSI6ItCQIiwi4oatlCI6ItCUIiwi4oa4Ijoi0JMiLCLihqYiOiLQqCIiLCLihqIiOiLQsiIsIuKGrCI6ItCgIiwi4oaylSI6ItCUIn0=";
-    const mapDecodeEncrypted = "eyLihpAiOiLihpIiLCLihpMiOiLihpEiLCJCSiI6IuKGkiIsIuKGkyI6IuKGkSIiLCJtIjoi0KYiLCJqIjoi0LQiLCJhIjoi0LkiLCLihp4iOiLihpkiLCJyIjoi0LciLCJzaCI6IuKGkyIsImoiOiLihpYiLCJmIjoi0LMiLCJjIjoi0LwiLCJ0Ijoi0LciLCJpIjoi0LoiLCLihpAiOiLihpgiLCJwIjoi0LQiLCJ4Ijoi0LgiLCJjaCI6ItCIIiwiZyI6ItCUIiwiayI6ItCjIiwiSCI6ItCWIiwicSI6ItCyIiwiZCI6ItCEIiwi0LIiOiLQqSIiLCJ1Ijoi0JkiLCLQpyI6ItCxIn0=";
-
-    let mapEncode = null;
-    let mapDecode = null;
-
-    // Элементы кнопок и вывода
+    // Элементы интерфейса
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalUsername = document.getElementById('modalUsername');
+    const modalPassword = document.getElementById('modalPassword');
+    const modalLoginBtn = document.getElementById('modalLoginBtn');
+    const modalError = document.getElementById('modalError');
+    const app = document.getElementById('app');
+    const inputText = document.getElementById('inputText');
     const btnEncode = document.getElementById('btnEncode');
     const btnDecode = document.getElementById('btnDecode');
     const outputText = document.getElementById('outputText');
 
-    // Функция проверки доступа
+    // Проверка доступа
     function checkAccess() {
-      const user = document.getElementById('modalUsername').value.trim();
-      const pass = document.getElementById('modalPassword').value.trim();
-      const errorElem = document.getElementById('modalError');
-
-      if (user === revealStr(encLogin) && pass === revealStr(encPass)) {
-        errorElem.style.display = 'none';
-        document.getElementById('modalOverlay').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        mapEncode = reveal(mapEncodeEncrypted);
-        mapDecode = reveal(mapDecodeEncrypted);
-
+      const user = modalUsername.value.trim();
+      const pass = modalPassword.value.trim();
+      if (user === login && pass === password) {
+        modalError.style.display = 'none';
+        modalOverlay.style.display = 'none';
+        app.style.display = 'block';
         btnEncode.disabled = false;
         btnDecode.disabled = false;
-
-        btnEncode.classList.remove('bg-yellow-300', 'cursor-not-allowed');
-        btnEncode.classList.add('bg-yellow-500', 'cursor-pointer');
-
-        btnDecode.classList.remove('bg-green-300', 'cursor-not-allowed');
-        btnDecode.classList.add('bg-green-500', 'cursor-pointer');
+        btnEncode.setAttribute('aria-disabled', 'false');
+        btnDecode.setAttribute('aria-disabled', 'false');
+        modalUsername.value = '';
+        modalPassword.value = '';
+        inputText.focus();
       } else {
-        errorElem.style.display = 'block';
+        modalError.style.display = 'block';
+        modalPassword.value = '';
+        modalPassword.focus();
       }
     }
 
-    // Трансформация текста по карте подстановок
+    modalLoginBtn.addEventListener('click', checkAccess);
+    modalPassword.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        checkAccess();
+      }
+    });
+    modalUsername.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        modalPassword.focus();
+      }
+    });
+
+    // Трансформация с сохранением регистра
     function transform(text, map) {
       return [...text].map(char => {
         const lower = char.toLowerCase();
-        const mapped = map[lower] || char;
-        return char === lower ? mapped : mapped.toUpperCase();
+        if (!map[lower]) return char;
+        const replaced = map[lower];
+        return char === lower ? replaced : replaced.toUpperCase();
       }).join('');
     }
 
-    // Эффект печати
-    function typeText(element, text, delay = 30) {
+    // Магическая анимация печати с мерцанием
+    async function typeText(element, text, delay = 40) {
       element.textContent = '';
-      let i = 0;
-      (function type() {
-        if (i < text.length) {
-          element.textContent += text[i++];
-          setTimeout(type, delay);
-        }
-      })();
+      for (let i = 0; i < text.length; i++) {
+        element.textContent += text[i];
+        element.style.animation = 'magic-glow 1.2s ease-in-out infinite alternate';
+        await new Promise(r => setTimeout(r, delay));
+      }
+      element.style.animation = 'none';
     }
 
-    function encode() {
-      const input = document.getElementById('inputText').value;
-      const output = transform(input, mapEncode);
-      typeText(outputText, output);
+    async function encode() {
+      const output = transform(inputText.value, mapEncode);
+      await typeText(outputText, output);
+    }
+    async function decode() {
+      const output = transform(inputText.value, mapDecode);
+      await typeText(outputText, output);
     }
 
-    function decode() {
-      const input = document.getElementById('inputText').value;
-      const output = transform(input, mapDecode);
-      typeText(outputText, output);
-    }
-
-    // Навешиваем обработчик на кнопку модалки
-    document.getElementById('modalLoginBtn').addEventListener('click', checkAccess);
-
-    // Также можно войти нажатием Enter в модалке
-    document.getElementById('modalPassword').addEventListener('keydown', e => {
-      if (e.key === 'Enter') checkAccess();
-    });
+    btnEncode.addEventListener('click', encode);
+    btnDecode.addEventListener('click', decode);
   </script>
 </body>
 </html>
